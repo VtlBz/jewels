@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_yasg',
     'debug_toolbar',
     'api',
     'deals',
@@ -121,6 +122,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
 }
 
 
@@ -130,6 +133,15 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
         'LOCATION': REDIS_HOST,
     }
+}
+
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Basic': {
+            'type': 'basic'
+        }
+    },
 }
 
 

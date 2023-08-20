@@ -69,6 +69,6 @@ sudo docker exec -it jewels-srv python manage.py migrate
 sudo docker exec -it jewels-srv python manage.py createsuperuser
 ```
 
-[Документация находится по адресу ```localhost:8000/api/v1/redoc```](localhost:8000/api/v1/redoc)
+[Базовая документация находится по адресу ```localhost:8000/api/v1/swagger/```](localhost:8000/api/v1/swagger/)
 
 \* *ТЗ и тестовые данные лежат в папке ./data*
