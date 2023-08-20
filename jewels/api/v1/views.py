@@ -21,7 +21,9 @@ class TopViewSet(mixins.ListModelMixin,
 
     @method_decorator(cache_page(None))
     def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({'response': serializer.data})
 
     def get_queryset(self):
         slice = settings.TOP_CUSTOMERS_COUNT
