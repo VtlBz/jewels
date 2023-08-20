@@ -2,5 +2,8 @@ Django==4.2.4
 django-debug-toolbar==4.2.0
 djangorestframework==3.14.0
 gunicorn==21.2.0
+hiredis==2.2.3
+psycopg2-binary==2.9.7
 python-dotenv==1.0.0
+redis==5.0.0
 requests==2.31.0

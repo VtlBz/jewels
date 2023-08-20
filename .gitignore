@@ -1,8 +1,7 @@
 # Local personal files
 temp_code/
-temp_*.py
-temp_*.txt
 .notes
+run
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

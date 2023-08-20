@@ -20,6 +20,7 @@ class CustomerAdmin(admin.ModelAdmin):
     list_editable = ('username',)
     search_fields = ('username',)
     readonly_fields = ('deal_count', 'spent_money',)
+    exclude = ('is_actual',)
     inlines = (DealInline,)
 
     def get_queryset(self, request):
