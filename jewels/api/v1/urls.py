@@ -1,9 +1,11 @@
 from django.urls import include, path
+
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
-from api.v1.views import DealsViewSet, TopViewSet
+
+from api.v1.views import DealsViewSet
 
 router_v1 = DefaultRouter()
 
@@ -11,12 +13,6 @@ router_v1.register(
     'deals',
     DealsViewSet,
     basename='deals'
-)
-
-router_v1.register(
-    'top',
-    TopViewSet,
-    basename='top'
 )
 
 schema_view = get_schema_view(

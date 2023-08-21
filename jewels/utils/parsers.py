@@ -1,5 +1,6 @@
-from collections import defaultdict
 import csv
+
+from collections import defaultdict
 
 
 def parse_deals(csv_file) -> dict:

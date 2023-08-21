@@ -1,6 +1,7 @@
 # Local personal files
 temp_code/
 .notes
+setup.cfg
 run
 
 # Byte-compiled / optimized / DLL files
