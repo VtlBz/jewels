@@ -6,7 +6,6 @@ from django.db.models import Sum
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -14,13 +13,14 @@ from rest_framework.response import Response
 from deals.models import Customer, Deal
 from utils import parse_deals, processing_top_qs
 from .serializers import (
-    FileUploadSerializer, ResponseSerializer, TopSerializer,
+    DealSerializer, FileUploadSerializer, ResponseSerializer, TopSerializer,
 )
 
 
 class DealsViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = []
+    serializer_class = DealSerializer
 
-    @swagger_auto_schema()
     @action(detail=False, methods=['post'])
     def upload(self, request):
         serializer = FileUploadSerializer(data=request.data)
@@ -55,16 +55,18 @@ class DealsViewSet(viewsets.ReadOnlyModelViewSet):
                               'Desc': serializer.errors},
                         status=status.HTTP_400_BAD_REQUEST)
 
-    @swagger_auto_schema()
     @method_decorator(cache_page(None))
     @action(detail=False, methods=['get'])
     def top(self, request):
+        """Эндпоинт получения ТОП-5 покупателей
+        с отформатированным списком покупок"""
+
         slice = settings.TOP_CUSTOMERS_COUNT
         queryset = Deal.objects.values('customer__username').annotate(
             gems_list=ArrayAgg('item'), spent_money=Sum('total')
         ).order_by('-spent_money')[:slice]
-        queryset = processing_top_qs(queryset)
+        formatted_qs = processing_top_qs(queryset)
         serializer = ResponseSerializer(
-            TopSerializer(queryset, many=True).data
+            TopSerializer(formatted_qs, many=True).data
         )
         return Response(serializer.data)

@@ -54,6 +54,7 @@ COMPOSE_PROJECT_NAME=jewels # имя проекта проекта в Docker Com
 ```bash
 sudo docker compose up -d
 ```
+
 - *В зависимости от настроек системы возможно тут и далее потребуется использовать команду **docker compose** c дефисом вместо пробела: **docker-compose***
 
 При первом запуске создать и применить миграции:
@@ -69,9 +70,9 @@ sudo docker exec -it jewels-srv python manage.py migrate
 sudo docker exec -it jewels-srv python manage.py createsuperuser
 ```
 
-В браузере перейти на страницу [localhost:8000/api/v1](localhost:8000/api/v1)
+В браузере перейти на страницу [localhost:8000/api/v1](localhost:8000/api/v1)  
 
-Базовая документация находится по адресу [localhost:8000/api/v1/swagger/](localhost:8000/api/v1/swagger/)
+Базовая документация находится по адресу [localhost:8000/api/v1/swagger/](localhost:8000/api/v1/swagger/)  
 
 В сервисе доступны следующие эндпоинты:
 
@@ -80,7 +81,8 @@ sudo docker exec -it jewels-srv python manage.py createsuperuser
     localhost/api/v1/deals/upload/
     ```
 
-    Позволяет отправить файл с информацией о сделках в формате .csv. Формат запроса -  ```[{'deals': <файл, содержащий историю сделок>}]```\
+    Позволяет отправить файл с информацией о сделках в формате .csv.  
+    Формат запроса -  ```[{'deals': <файл, содержащий историю сделок>}]```  
     Порядок полей в файле - ```customer,item,total,quantity,date```.
 
 - 
@@ -90,7 +92,7 @@ sudo docker exec -it jewels-srv python manage.py createsuperuser
 
     Позволяет получить список из 5 клиентов, потративших наибольшую сумму за весь период. Для каждого из ТОП-5 покупателей указаны логин клиента, сумма потраченных средств за весь период и список названий камней, которые купили как минимум двое из ТОП-5, включая данного клиента.
 
-    При необходимости указать вместо *localhost* нужное имя хоста.
+При необходимости указать вместо ***localhost*** нужное имя хоста.
 
 ---
 
