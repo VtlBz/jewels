@@ -6,23 +6,45 @@ from django.db.models import Sum
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 
-from rest_framework import status, viewsets
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from deals.models import Customer, Deal
+from deals.models import Customer
 from utils import parse_deals, processing_top_qs
 from .serializers import (
-    DealSerializer, FileUploadSerializer, ResponseSerializer, TopSerializer,
+    DealSerializer, FileUploadSerializer, TopSerializer,
 )
 
 
-class DealsViewSet(viewsets.ReadOnlyModelViewSet):
+class DealsViewSet(mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
     queryset = []
     serializer_class = DealSerializer
 
+    def get_serializer_class(self):
+        if self.action == 'upload':
+            return FileUploadSerializer
+        elif self.action == 'top':
+            return TopSerializer
+        else:
+            return super().get_serializer_class()
+
+    @swagger_auto_schema(method='get')
+    def list(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        # return super().list(request, *args, **kwargs)
+
     @action(detail=False, methods=['post'])
     def upload(self, request):
+        """
+        Загрузка файла с информацией о сделках.
+
+        Формат файла: *.csv.
+        Поля: 'customer', 'item', 'total', 'quantity', 'date'
+        """
+
         serializer = FileUploadSerializer(data=request.data)
         if serializer.is_valid():
             csv_file = request.FILES.get('deals')
@@ -58,15 +80,18 @@ class DealsViewSet(viewsets.ReadOnlyModelViewSet):
     @method_decorator(cache_page(None))
     @action(detail=False, methods=['get'])
     def top(self, request):
-        """Эндпоинт получения ТОП-5 покупателей
-        с отформатированным списком покупок"""
+        """
+        Получение ТОП-5 покупателей.
+
+        В ответе отформатирован список покупок,
+        и включает только покупки, имеющие вхождения
+        в список покупок у других покупателей.
+        """
 
         slice = settings.TOP_CUSTOMERS_COUNT
-        queryset = Deal.objects.values('customer__username').annotate(
-            gems_list=ArrayAgg('item'), spent_money=Sum('total')
+        queryset = Customer.objects.values('username').annotate(
+            gems=ArrayAgg('deals__item'), spent_money=Sum('deals__total')
         ).order_by('-spent_money')[:slice]
         formatted_qs = processing_top_qs(queryset)
-        serializer = ResponseSerializer(
-            TopSerializer(formatted_qs, many=True).data
-        )
+        serializer = TopSerializer(formatted_qs)
         return Response(serializer.data)

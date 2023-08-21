@@ -13,7 +13,7 @@ def processing_top_qs(queryset):
     """
     unique_gems_data = {}
     for item in queryset:
-        unique_gems_data[item['customer__username']] = set(item['gems_list'])
+        unique_gems_data[item['username']] = set(item['gems'])
     c = Counter(chain(*unique_gems_data.values()))
     result_gems = defaultdict(list)
     for customer, items in unique_gems_data.items():
@@ -21,6 +21,6 @@ def processing_top_qs(queryset):
             if c[item] >= 2:
                 result_gems[customer].append(item)
     for item in queryset:
-        item['gems_list'] = result_gems[item['customer__username']]
+        item['gems'] = result_gems[item['username']]
 
     return queryset

@@ -18,7 +18,7 @@ router_v1.register(
 schema_view = get_schema_view(
     openapi.Info(
         title='Jewels Project API',
-        default_version='v1',
+        default_version='v1.0.0',
         description='API documentation for Jewels project',
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email='webmaster@vtlbz.com'),

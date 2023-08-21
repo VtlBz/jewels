@@ -14,18 +14,10 @@ class DealSerializer(serializers.ModelSerializer):
 
 
 class TopSerializer(serializers.Serializer):
-    """Сериализатор, формирующий данные о покупателе"""
-
-    username = serializers.CharField(source='customer__username')
-    spent_money = serializers.IntegerField()
-    gems = serializers.ListField(source='gems_list')
-
-
-class ResponseSerializer(serializers.Serializer):
     """
-    Сериализатор ответа, формирующий ответ в заданном формате.
+    Сериализатор, формирующий данные о покупателе.
 
-    Помещает полученные данные в поле "response" ответа.
+    Помещает данные о каждом покупателе в список в поле "response".
     """
 
     response = serializers.SerializerMethodField()
