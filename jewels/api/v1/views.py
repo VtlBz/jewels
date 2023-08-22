@@ -6,35 +6,26 @@ from django.db.models import Sum
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from deals.models import Customer
 from utils import parse_deals, processing_top_qs
-from .serializers import (
-    DealSerializer, FileUploadSerializer, TopSerializer,
-)
+from .serializers import FileUploadSerializer, TopSerializer
 
 
 class DealsViewSet(mixins.ListModelMixin,
                    viewsets.GenericViewSet):
-    queryset = []
-    serializer_class = DealSerializer
+    """
+    Не задействован.
 
-    def get_serializer_class(self):
-        if self.action == 'upload':
-            return FileUploadSerializer
-        elif self.action == 'top':
-            return TopSerializer
-        else:
-            return super().get_serializer_class()
+    Эндпоинт не используется в текущей версии сервиса.
+    Является корневым для эндпоинтов `/top/` и `/upload/`
+    """
 
-    @swagger_auto_schema(method='get')
     def list(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        # return super().list(request, *args, **kwargs)
 
     @action(detail=False, methods=['post'])
     def upload(self, request):
@@ -79,7 +70,7 @@ class DealsViewSet(mixins.ListModelMixin,
 
     @method_decorator(cache_page(None))
     @action(detail=False, methods=['get'])
-    def top(self, request):
+    def top(self, _):
         """
         Получение ТОП-5 покупателей.
 

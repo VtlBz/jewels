@@ -1,17 +1,5 @@
 from rest_framework import serializers
 
-from deals.models import Customer, Deal
-
-
-class DealSerializer(serializers.ModelSerializer):
-    customer = serializers.PrimaryKeyRelatedField(
-        queryset=Customer.objects.all(), source='customer.username'
-    )
-
-    class Meta:
-        model = Deal
-        fields = '__all__'
-
 
 class TopSerializer(serializers.Serializer):
     """
@@ -29,13 +17,12 @@ class TopSerializer(serializers.Serializer):
 class FileUploadSerializer(serializers.Serializer):
     """Сериализатор загрузки файла"""
 
-    expected_content_type = 'text/csv'
-
     deals = serializers.FileField()
 
     def validate_deals(self, value):
+        expected_content_type = 'text/csv'
         try:
-            if value.content_type == self.expected_content_type:
+            if value.content_type == expected_content_type:
                 return value
         except AttributeError as e:
             raise serializers.ValidationError(e)

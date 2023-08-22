@@ -134,15 +134,6 @@ CACHES = {
 }
 
 
-SWAGGER_SETTINGS = {
-    'SECURITY_DEFINITIONS': {
-        'Basic': {
-            'type': 'basic'
-        }
-    },
-}
-
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
