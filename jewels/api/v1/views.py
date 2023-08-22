@@ -24,8 +24,15 @@ class DealsViewSet(mixins.ListModelMixin,
     Является корневым для эндпоинтов `/top/` и `/upload/`
     """
 
+    def get_serializer_class(self):
+        if self.action == 'upload':
+            return FileUploadSerializer
+
     def list(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        absolute_url = request.build_absolute_uri()
+        return Response(data={'top': f'{absolute_url}top',
+                              'upload': f'{absolute_url}upload'},
+                        status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
     def upload(self, request):
