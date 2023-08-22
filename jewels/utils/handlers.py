@@ -11,9 +11,10 @@ def processing_top_qs(queryset):
     в котором присутствуют только предметы, имеющие пересечения
     хотя бы с одним другим покупателем в полученном наборе.
     """
+
     unique_gems_data = {}
     for item in queryset:
-        unique_gems_data[item['username']] = set(item['gems'])
+        unique_gems_data[item['username']] = item['gems']
     c = Counter(chain(*unique_gems_data.values()))
     result_gems = defaultdict(list)
     for customer, items in unique_gems_data.items():

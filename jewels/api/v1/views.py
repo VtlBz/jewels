@@ -81,7 +81,8 @@ class DealsViewSet(mixins.ListModelMixin,
 
         slice = settings.TOP_CUSTOMERS_COUNT
         queryset = Customer.objects.values('username').annotate(
-            gems=ArrayAgg('deals__item'), spent_money=Sum('deals__total')
+            gems=ArrayAgg('deals__item', distinct=True),
+            spent_money=Sum('deals__total')
         ).order_by('-spent_money')[:slice]
         formatted_qs = processing_top_qs(queryset)
         serializer = TopSerializer(formatted_qs)
