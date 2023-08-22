@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_yasg',
-    'debug_toolbar',
     'api',
     'deals',
 ]
@@ -43,7 +42,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'jewels.urls'
@@ -144,7 +142,7 @@ LOGGING = {
     },
     'loggers': {
         'django.db.backends': {
-            'level': 'DEBUG',
+            'level': 'ERROR',
             'handlers': ['console', ],
         },
     }

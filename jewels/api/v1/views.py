@@ -30,9 +30,9 @@ class DealsViewSet(mixins.ListModelMixin,
 
     def list(self, request, *args, **kwargs):
         absolute_url = request.build_absolute_uri()
-        return Response(data={'top': f'{absolute_url}top',
-                              'upload': f'{absolute_url}upload'},
-                        status=status.HTTP_200_OK)
+        data = {'top': f'{absolute_url}top',
+                'upload': f'{absolute_url}upload'}
+        return Response(data=data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
     def upload(self, request):
