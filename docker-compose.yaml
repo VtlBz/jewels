@@ -15,6 +15,11 @@ services:
       - pg_data:/var/lib/postgresql/data/
     env_file:
       - .env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 1s
+      timeout: 5s
+      retries: 10
 
   cache:
     image: redis:6.2-alpine
@@ -27,34 +32,34 @@ services:
     env_file:
       - .env
 
-  backend-srv:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: jewels-srv
-    restart: on-failure
-    ports:
-      - '8000:8000'
-    volumes:
-      - static_value:/jewels/static/
-      - media_value:/jewels/media/
-    depends_on:
-      - database
-      - cache
-    env_file:
-      - .env
+  # backend-srv:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: jewels-srv
+  #   restart: on-failure
+  #   ports:
+  #     - '8000:8000'
+  #   volumes:
+  #     - static_value:/jewels/static/
+  #     - media_value:/jewels/media/
+  #   depends_on:
+  #     - database
+  #     - cache
+  #   env_file:
+  #     - .env
 
-  nginx:
-    image: nginx:1.19.3
-    container_name: jewels-nginx
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - static_value:/var/html/static/
-      - media_value:/var/html/media/
-    depends_on:
-      - backend-srv
+  # nginx:
+  #   image: nginx:1.19.3
+  #   container_name: jewels-nginx
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/conf.d/default.conf
+  #     - static_value:/var/html/static/
+  #     - media_value:/var/html/media/
+  #   depends_on:
+  #     - backend-srv
 
 volumes:
   static_value:
