@@ -50,12 +50,15 @@ class DealsViewSet(mixins.ListModelMixin,
             try:
                 parsed_data = parse_deals(csv_file)
             except ValueError as err:
-                return Response(
-                    data={'Status': 'Error',
-                          'Desc': ('Не удалось обработать файл. '
-                                   'Нарушена структура данных. '
-                                   f'Ошибка: {err}')},
-                    status=status.HTTP_400_BAD_REQUEST)
+                data = {'Status': 'Error',
+                        'Desc': {
+                            'deals': [
+                                ('Не удалось обработать файл, '
+                                 'нарушена структура данных. '
+                                 f'Ошибка: {err}')
+                            ]
+                        }},
+                return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
             try:
                 for username, deals_data in parsed_data.items():
                     Customer.create_customer_with_deals(username, deals_data)
@@ -70,7 +73,7 @@ class DealsViewSet(mixins.ListModelMixin,
                                 status=status.HTTP_400_BAD_REQUEST)
             return Response(
                 data={'Status': 'OK'},
-                status=status.HTTP_200_OK
+                status=status.HTTP_201_CREATED
             )
         return Response(data={'Status': 'Error',
                               'Desc': serializer.errors},
@@ -100,4 +103,5 @@ class DealsViewSet(mixins.ListModelMixin,
 
             cache.set(cache_key_top, serializer.data, timeout=None)
 
-        return Response(cache.get(cache_key_top))
+        return Response(cache.get(cache_key_top),
+                        status=status.HTTP_200_OK)

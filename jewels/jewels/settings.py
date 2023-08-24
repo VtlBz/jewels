@@ -2,12 +2,14 @@ import os
 
 from pathlib import Path
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
 DEFAULT_TOKEN: str = 'DEFAULT_SECRET_KEY'
 DEFAULT_HOSTS: str = '127.0.0.1 localhost [::1]'
 
-load_dotenv()
+
+dotenv_path = find_dotenv(filename='infra/.env')
+load_dotenv(dotenv_path)
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,7 +20,8 @@ DEBUG = os.getenv('DEBUG_STATE', 'False') in ('True',)
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', DEFAULT_HOSTS).split(' ')
 
-INTERNAL_IPS = ALLOWED_HOSTS
+if DEBUG:
+    INTERNAL_IPS = ALLOWED_HOSTS
 
 
 INSTALLED_APPS = [
@@ -29,7 +32,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'drf_yasg',
     'api',
     'deals',
 ]
@@ -47,10 +49,11 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'jewels.urls'
 
 TEMPLATES_DIR = BASE_DIR / 'templates'
+DOCS_DIR = BASE_DIR / 'docs'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATES_DIR],
+        'DIRS': [TEMPLATES_DIR, DOCS_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -106,6 +109,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'docs')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

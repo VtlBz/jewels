@@ -29,7 +29,7 @@ def parse_deals(csv_file) -> dict:
                 'total': total,
                 'deal_date': deal_date}
         if (not all(data.values())):
-            raise ValueError('Невалидная строка. Некоторые элементы пусты.')
+            raise ValueError('Невалидная строка - некоторые элементы пусты.')
         objects[username].append(data)
 
     return objects

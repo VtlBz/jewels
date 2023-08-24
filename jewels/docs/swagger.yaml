@@ -1,0 +1,153 @@
+openapi: 3.0.2
+info:
+  version: 1.0.0
+  title: Jewels Project API
+  description: |
+    API документация для проекта *Jewels*.
+    
+    Сервис предостовляет возможность отправить файл с информацией о сделках 
+    в формате ***.csv*** и получить ТОП-5 покупателей по общим затратам,
+    со списком купленных камней, которые входят в список покупок как минимум
+    ещё одного из ТОП покупателей.'
+  # termsOfService: "https://www.google.com/policies/terms/"
+  contact:
+    name: Jewels API
+    url: http://localhost/api/v1
+    email: webmaster@vtlbz.com
+  license:
+    name: MIT License
+    url: https://mit-license.org/
+servers:
+- url: http://localhost/api/v1
+- url: http://localhost:8000/api/v1
+paths:
+  /deals/:
+    get:
+      tags:
+      - deals
+      operationId: deals_list
+      summary: Не задействован.
+      description: |
+        Эндпоинт не используется в текущей версии сервиса.
+        Является корневым для эндпоинтов `/top/` и `/upload/`.
+      parameters: []
+      responses:
+        '200':
+          description: Возвращает ссылки на вложенные эндпоинты.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DealsOperations'
+    parameters: []
+  /deals/top/:
+    get:
+      tags:
+      - deals
+      operationId: deals_top
+      summary: Получение ТОП-5 покупателей.
+      description: |
+        В ответе отформатирован список покупок,
+        и включает только покупки, имеющие вхождения
+        в список покупок у других покупателей.
+      parameters:
+      - name: refresh_cache
+        in: query
+        description: Передаёт запрос на обновление данных в кэшэ.
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+        style: form
+      responses:
+        '200':
+          description: Успешный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopResponse'
+    parameters: []
+  /deals/upload/:
+    post:
+      tags:
+      - deals
+      operationId: deals_upload
+      summary: Загрузка файла с информацией о сделках.
+      description: |
+        Формат файла: ***.csv**.
+        Поля: *customer*, *item*, *total*, *quantity*, *date*
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                deals:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Файл был обработан без ошибок.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileUploadOK'
+        '400':
+          description: В процессе обработки файла произошла ошибка.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileUploadErr'
+    parameters: []
+components:
+  schemas:
+    DealsOperations:
+      type: object
+      properties:
+        top:
+          type: string
+          example: http://localhost/api/v1/deals/top/
+        upload:
+          type: string
+          example: http://localhost/api/v1/deals/upload/
+    TopCustomer:
+      type: object
+      properties:
+        username:
+          type: string
+        gems:
+          type: array
+          items:
+            type: string
+        spent_money:
+          type: integer
+          format: int32
+          example: 2147483647
+    TopResponse:
+      type: object
+      properties:
+        response:
+          type: array
+          items:
+            $ref: '#/components/schemas/TopCustomer'
+    FileUploadOK:
+      type: object
+      properties:
+        Status:
+          type: string
+          example: OK
+    FileUploadErr:
+      type: object
+      properties:
+        Status:
+          type: string
+          example: Error
+        Desc:
+          type: object
+          properties:
+            deals:
+              type: array
+              items:
+                type: string
+                example: Сообщение об ошибке

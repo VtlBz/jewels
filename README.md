@@ -25,9 +25,9 @@ Cервис **Jewels**, для получения статистики по сд
 git clone git@github.com:VtlBz/jewels.git
 ```
 
-Перейти в папку с проектом.
+Перейти в папку ***infra/***, находящуюся внутри папки с проектом.
 
-В указанной папке в файле .env указать переменные окружения, соответствующие проекту.
+В указанной папке в файле ***.env*** указать переменные окружения, соответствующие проекту.
 Пример заполнения:
 
 ```bash
@@ -40,10 +40,10 @@ DB_ENGINE=django.db.backends.postgresql # Тип используемой БД. 
 DB_NAME=postgres # Имя базы
 POSTGRES_USER=postgres # Имя пользователя БД
 POSTGRES_PASSWORD=postgres # Пароль пользователя БД
-DB_HOST=db # Название сервиса (контейнера), по умолчанию - db
+DB_HOST=localhost # название сервиса (контейнера), по умолчанию - localhost
 DB_PORT=5432 # Порт для подключения к сервису, стандартный по умолчанию
 
-REDIS_HOST=localhost # Название сервиса (контейнера), по умолчанию - cache
+REDIS_HOST=localhost # название сервиса (контейнера), по умолчанию - localhost
 REDIS_PORT=6379 # Порт для подключения к сервису, стандартный по умолчанию
 
 COMPOSE_PROJECT_NAME=jewels # имя проекта проекта в Docker Compose
@@ -70,9 +70,9 @@ sudo docker exec -it jewels-srv python manage.py migrate
 sudo docker exec -it jewels-srv python manage.py createsuperuser
 ```
 
-В браузере перейти на страницу [localhost:8000/api/v1](localhost:8000/api/v1)  
+В браузере перейти на страницу [localhost/api/v1](localhost/api/v1)  
 
-Базовая документация находится по адресу [localhost:8000/api/v1/swagger/](localhost:8000/api/v1/swagger/)  
+Базовая документация находится по адресу [localhost/api/v1/swagger/](localhost/api/v1/swagger/)  
 
 В сервисе доступны следующие эндпоинты:
 
@@ -81,9 +81,9 @@ sudo docker exec -it jewels-srv python manage.py createsuperuser
     localhost/api/v1/deals/upload/
     ```
 
-    Позволяет отправить файл с информацией о сделках в формате .csv.  
-    Формат запроса -  ```[{'deals': <файл, содержащий историю сделок>}]```  
-    Порядок полей в файле - ```customer,item,total,quantity,date```.
+    Позволяет отправить файл с информацией о сделках в формате *.csv*. Ключ (аргумент) - ```deals```.  
+    Формат запроса -  ```{'deals': <файл, содержащий историю сделок>}```  
+    Порядок полей в файле - ```customer, item, total, quantity, date```.
 
 - 
     ```
